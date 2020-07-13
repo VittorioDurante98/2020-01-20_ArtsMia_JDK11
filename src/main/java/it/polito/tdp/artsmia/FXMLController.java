@@ -3,6 +3,7 @@ package it.polito.tdp.artsmia;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.artsmia.model.Arco;
 import it.polito.tdp.artsmia.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,7 +32,7 @@ public class FXMLController {
     private Button btnCalcolaPercorso;
 
     @FXML
-    private ComboBox<?> boxRuolo;
+    private ComboBox<String> boxRuolo;
 
     @FXML
     private TextField txtArtista;
@@ -41,7 +42,8 @@ public class FXMLController {
 
     @FXML
     void doArtistiConnessi(ActionEvent event) {
-
+    	txtResult.clear();
+    	txtResult.appendText(model.getConnessi());
     }
 
     @FXML
@@ -51,7 +53,16 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	txtResult.clear();
+    	String ruolo = boxRuolo.getValue();
+    	if(ruolo == null) {
+    		txtResult.appendText("Scegli un ruolo");
+    		return;
+    	}
+    	model.creaGrafo(ruolo);
+    	txtResult.appendText("Vertici: "+model.getGrafo().vertexSet().size());
+    	txtResult.appendText("\nArchi: "+model.getGrafo().edgeSet().size());
+    	btnArtistiConnessi.setDisable(false);
     }
 
     @FXML
@@ -67,6 +78,8 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		this.boxRuolo.getItems().addAll(model.getRuoli());
+		btnArtistiConnessi.setDisable(true);
 	}
 }
 
