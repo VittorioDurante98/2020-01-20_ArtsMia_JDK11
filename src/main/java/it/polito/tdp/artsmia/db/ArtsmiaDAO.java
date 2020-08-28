@@ -113,6 +113,30 @@ public class ArtsmiaDAO {
 		}
 	}
    
+   
+	
+    public List<String> loadRuoli() {
+		
+		String sql = "SELECT DISTINCT a.role FROM authorship AS a ORDER BY a.role";
+		List<String> result = new ArrayList<>();
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+				
+				result.add(res.getString("role"));
+			}
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+    
    public List<Arco> listArchi(String ruolo) {
 		
 		String sql = "SELECT a1.artist_id as id1, a1.name as n1, a2.artist_id as id2, a2.name as n2, COUNT(distinct e1.exhibition_id) AS peso " + 
@@ -136,6 +160,38 @@ public class ArtsmiaDAO {
 						          new Artist(res.getInt("id2"), res.getString("n2")), res.getInt("peso"));
 				
 				result.add(a);
+			}
+			conn.close();
+			return result;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+    
+   public List<Arco> loadArchi(String ruolo) {
+		
+		String sql = "SELECT a1.artist_id AS id1, a1.name AS n1, a2.artist_id AS id2, a2.name AS n2, COUNT( DISTINCT e1.exhibition_id ) AS peso " + 
+				"FROM artists AS a1, artists AS a2, authorship AS au1, authorship AS au2, exhibition_objects AS e1, exhibition_objects AS e2 " + 
+				"WHERE a1.artist_id > a2.artist_id AND a1.artist_id=au1.artist_id  AND a2.artist_id=au2.artist_id " + 
+				"      AND au1.role=? AND au2.role =? " + 
+				"		AND au1.object_id = e1.object_id AND au2.object_id= e2.object_id AND e1.exhibition_id= e2.exhibition_id " + 
+				"GROUP BY a1.artist_id, a2.artist_id";
+		List<Arco> result = new ArrayList<>();
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, ruolo);
+			st.setString(2, ruolo);
+			ResultSet res = st.executeQuery();
+			while (res.next()) {
+			
+				Arco a= new Arco((new Artist(res.getInt("id1"), res.getString("n1"))), 
+				                  new Artist(res.getInt("id2"), res.getString("n2")), res.getInt("peso"));
+		
+	        	result.add(a);
 			}
 			conn.close();
 			return result;

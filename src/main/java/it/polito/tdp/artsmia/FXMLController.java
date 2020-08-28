@@ -43,7 +43,8 @@ public class FXMLController {
     @FXML
     void doArtistiConnessi(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText(model.getConnessi());
+    	//txtResult.appendText(model.getConnessi());
+    	txtResult.appendText(model.artistiConnessi());
     }
 
     @FXML
@@ -53,7 +54,8 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	txtResult.clear();
+    	//PRIMO TENTATIVO
+    	/*txtResult.clear();
     	String ruolo = boxRuolo.getValue();
     	if(ruolo == null) {
     		txtResult.appendText("Scegli un ruolo");
@@ -62,7 +64,21 @@ public class FXMLController {
     	model.creaGrafo(ruolo);
     	txtResult.appendText("Vertici: "+model.getGrafo().vertexSet().size());
     	txtResult.appendText("\nArchi: "+model.getGrafo().edgeSet().size());
-    	btnArtistiConnessi.setDisable(false);
+    	btnArtistiConnessi.setDisable(false);*/
+    	
+    	//SECONDO TENTATIVO
+    	txtResult.clear();
+    	if (boxRuolo.getValue()==null) {
+			txtResult.appendText("Seleziona un ruolo!\n");
+			return;
+		}
+    	String ruolo= boxRuolo.getValue().toString();
+    	model.setGrafo(ruolo);
+    	txtResult.appendText("Grafo creato\n");
+    	txtResult.appendText("Vertici:"+model.getGrafo().vertexSet().size()+"\n");
+    	txtResult.appendText("Archi:"+model.getGrafo().edgeSet().size()+"\n");
+    	this.btnArtistiConnessi.setDisable(false);
+    	
     }
 
     @FXML
@@ -78,6 +94,8 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		/*this.boxRuolo.getItems().addAll(model.getRuoli());
+		btnArtistiConnessi.setDisable(true);*/
 		this.boxRuolo.getItems().addAll(model.getRuoli());
 		btnArtistiConnessi.setDisable(true);
 	}

@@ -64,7 +64,11 @@ public class Arco implements Comparable<Arco>{
 	}
 	@Override
 	public int compareTo(Arco o) {
-		return this.peso-o.getPeso();
+		return -(this.peso-o.getPeso());
+	}
+	@Override
+	public String toString() {
+		return a1.getNome()+" - "+a2.getNome()+" "+this.getPeso();
 	}
 	
 	
